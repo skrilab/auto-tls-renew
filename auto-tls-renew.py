@@ -4,6 +4,7 @@ import paramiko
 import time
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from telegram import send_notification
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,6 +18,7 @@ MIKROTIK_PASSWORD = os.getenv("MIKROTIK_PASSWORD")
 INTERFACE = os.getenv("MIKROTIK_INTERFACE")
 RULE_IDS = os.getenv("MIKROTIK_RULE_ID")
 
+# Function to get access token for Nginx Proxy Manager
 def get_token():
     """Request a new access token."""
     response = requests.post(API_TOKEN_URL, json={
@@ -27,7 +29,7 @@ def get_token():
     response.raise_for_status()
     return response.json()["token"]
 
-
+# Function to list all TLS certificates
 def get_certificates(token):
     """Fetch certificates information."""
     headers = {"Authorization": f"Bearer {token}"}
@@ -35,7 +37,7 @@ def get_certificates(token):
     response.raise_for_status()
     return response.json()
 
-
+# Function to renew TLS certificates
 def renew_certificate(token, cert_id):
     """Renew a specific certificate."""
     headers = {"Authorization": f"Bearer {token}"}
@@ -43,7 +45,7 @@ def renew_certificate(token, cert_id):
     response.raise_for_status()
     return response.json()
 
-
+# Function to connect to Mikrotik
 def connect_mikrotik():
     """Connect to MikroTik router using SSH."""
     client = paramiko.SSHClient()
@@ -51,7 +53,7 @@ def connect_mikrotik():
     client.connect(MIKROTIK_HOST, username=MIKROTIK_USER, password=MIKROTIK_PASSWORD)
     return client
 
-
+# Function to check Public (it's dynamic) IP on Mikrotik
 def get_ip_address(client, INTERFACE):
     """Get the IP address assigned to a specified interface."""
     command = f"/ip address print detail where interface={INTERFACE}"
@@ -76,7 +78,7 @@ def get_ip_address(client, INTERFACE):
     print("No IP address found on interface", INTERFACE)
     return None
 
-
+# Function to update NAT rule with Public IP
 def update_nat_rule_dst_address(client, RULE_IDS, ip_address):
     """Update the destination address of a NAT rule."""
     command = f'/ip firewall nat set numbers={RULE_IDS} dst-address={ip_address}'
@@ -90,7 +92,7 @@ def update_nat_rule_dst_address(client, RULE_IDS, ip_address):
     else:
         print("NAT rule updated successfully!")
 
-
+# Function to enable NAT rule on Mikrotik
 def enable_nat_rule(client, RULE_IDS):
     """Enable NAT rule on MikroTik."""
     command = f'/ip firewall nat enable numbers={RULE_IDS}'
@@ -104,7 +106,7 @@ def enable_nat_rule(client, RULE_IDS):
     else:
         print("NAT rule enabled successfully!")
 
-
+# Function to disable NAT rule on Mikrotik
 def disable_nat_rule(client, RULE_IDS):
     """Disable NAT rule on MikroTik."""
     command = f'/ip firewall nat disable numbers={RULE_IDS}'
