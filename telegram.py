@@ -17,5 +17,3 @@ def send_notification(message):
 
     response = requests.post(TELEGRAM_URL, data=payload)
     return response.json()
-
-send_notification("Hello, this is a test message!")
