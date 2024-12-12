@@ -14,19 +14,8 @@ def send_notification(message):
         'chat_id': CHAT_ID,
         'text': message,
     }
-    
-    # Send the request to the Telegram API
+
     response = requests.post(TELEGRAM_URL, data=payload)
+    return response.json()
 
-    # Print the response for debugging
-    print("Response Status Code:", response.status_code)
-    print("Response Body:", response.json())
-
-    # Check if the request was successful
-    if response.status_code == 200:
-        print("Notification sent successfully!")
-    else:
-        print("Failed to send notification. Error:", response.json())
-
-# Example usage
-# send_notification('Hello! This is a test notification.')
+send_notification("Hello, this is a test message!")

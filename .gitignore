@@ -1,4 +1,9 @@
-# Python virtual environment
+# Python stuff
 venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
+# ENV file
 .env
