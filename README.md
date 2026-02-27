@@ -11,5 +11,6 @@ pip install -r requirements.txt
 2. Schedule the script to run every day or so
 
 ### ToDo
--  Create a function that checks if public DNS records need to be updated to align with Mikrotik's public IP.
-
+- Create a function that checks if public DNS records need to be updated to align with Mikrotik's public IP.
+- Update this to actual state.
+  
